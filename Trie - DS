@@ -1,0 +1,84 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+struct node
+{
+       bool end;
+       node *child[26];
+};
+
+node *new_node()
+{
+     node *nn = new node();
+     nn->end=false;
+     
+     for(int i=0;i<26;++i) nn->child[i]=NULL;
+     
+     return nn;
+}
+ 
+bool fun(node *current)
+{
+     for(int i=0;i<10;++i)
+     {
+             if(current->child[i]!=NULL) return true;
+     }
+     
+     return false;
+} 
+    
+
+bool insert(node *head,string word)
+{    
+     node *current=head;
+     
+     for(int i=0;i<word.size();++i)
+     {
+             int letter = (int)word[i] - (int)'a';
+             
+             if(current->child[letter]==NULL)
+             current->child[letter] = new_node();
+             else if(current->child[letter]->end==true)
+             { return false;}
+             else if(i==word.size()-1 && fun(current))
+             return false;
+             
+             current = current->child[letter];
+     }
+     
+     current->end=true;
+  
+     return true;
+}                         
+             
+int main()
+{
+    long int n,i;string word;
+    node *head= new_node();
+    bool check=true;
+    cin >> n;                 //Number of Words
+    
+    vector<string> v;
+    
+    for(i=0;i<n;++i)
+    {
+              cin >> word;    //Enter word
+              v.push_back(word);  
+    }
+    bool p;
+    for(i=0;i<n;++i)
+    {
+          p=insert(head,v[i]);
+          
+          if(!p)
+          {cout<<"BAD SET"<<endl<<v[i];check=false;break;}
+    }
+    if(check)cout<<"GOOD SET";
+    
+    
+    return 0;
+}         
+              
