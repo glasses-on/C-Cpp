@@ -1,3 +1,21 @@
+/*
+This program creates a data structure - TRIE and takes a set of strings and check weather any
+string is a prefix of any other string in the set.
+e.g1-
+3
+aab
+aabcde
+pqr
+BAD SET (as aab is a prefix of aabcde)
+
+eg2-
+3
+abc
+pqrst
+pqtabc
+GOOD SET
+*/
+
 #include<iostream>
 #include<vector>
 #include<string>
