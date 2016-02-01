@@ -1,0 +1,292 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+#define pb push_back
+#define veci vector<int>
+#define vecb vector<bool>
+#define pi pair<int,int>
+#define INF 9999
+
+/*
+                    Vogel Method for Transportation cost optimization
+                                      (glasses-on)
+                                    
+Examples:
+
+http://www.universalteacherpublications.com/univ/ebooks/or/Ch5/vogel.htm
+
+Enter number of sources: 3
+Enter 3supplies: 120 70 50
+
+Enter number of destination: 4
+Enter 4demands: 60 40 30 110
+Supplies and demand are balanced
+Enter transportation cost as a grid of 3x4 :
+20      22      17      4
+24      37      9       7
+32      37      20      15
+
+Solution: 3520
+*/
+
+/*
+Example 2
+http://atozmath.com/CBOM/Transportation.aspx?q=modi
+
+Enter number of sources: 3
+Enter 3supplies: 250 300 400
+
+Enter number of destination: 4
+Enter 4demands: 200 225 275 250
+Supplies and demand are balanced
+Enter transportation cost as a grid of 3x4 :
+11      13      17      14
+16      18      14      10
+21      24      13      10
+
+Solution: 12075
+*/
+
+int arr[500][500];
+veci fun_v(int n,int m,vector<vecb> check)
+{
+     veci v;
+       
+     for(int j=0;j<m;++j)
+     {
+             int diff;
+             veci temp;
+             
+             for(int i=0;i<n;++i)
+             {
+                     if(check[i][j])
+                     temp.pb(arr[i][j]);              
+             }
+             if(!temp.empty())
+             sort(temp.begin(),temp.end());
+             
+             if(temp.size()==0)
+             diff=-1;
+             else if(temp.size()==1)
+             diff = temp[0];
+             else
+             diff= temp[1]-temp[0];
+             
+             v.pb(diff);
+     }
+     
+     return v;
+}
+veci fun_u(int n,int m,vector<vecb> check)
+{
+     veci u;
+
+         
+     for(int i=0;i<n;++i)
+     {
+             int diff;
+             veci temp;
+             
+             for(int j=0;j<m;++j)
+             {
+                     if(check[i][j])
+                     temp.pb(arr[i][j]);              
+             }
+             if(!temp.empty())
+             sort(temp.begin(),temp.end());
+             
+             if(temp.size()==0)
+             diff=-1;
+             else if(temp.size()==1)
+             diff = temp[0];
+             else
+             diff= temp[1]-temp[0];
+             
+             u.pb(diff);
+     }
+     
+     return u;
+}
+void print(veci v)
+{
+     for(int i=0;i<v.size();++i)
+     cout<<v[i]<<" ";
+     
+     cout<<endl;
+}
+
+bool check_balance(int *supp,int *dem,int n,int m)
+{
+     long int sum1(0),sum2(0);
+     
+     for(int i=0;i<n;++i)
+     sum1 += supp[i];
+     
+     for(int i=0;i<m;++i)
+     sum2 += dem[i];
+     
+     return sum1==sum2;
+}
+
+int find_index(int value,veci ar)
+{
+    for(int i=0;i<ar.size();++i)
+    {
+            if(ar[i]==value)
+            return i;
+    }
+    return 0;
+}
+
+bool all_zero(int n,int m,int *dem,int *supp)
+{
+     for(int i=0;i<n;++i)
+     {
+             if(supp[i]!=0)
+             return 0;
+     }
+     for(int j=0;j<m;++j)
+     {
+             if(dem[j]!=0)
+             return 0;
+     }     
+     return 1;
+}
+    
+int main()
+{
+    int n,m;
+    cout<<"Enter number of sources: ";
+    cin >> n;
+    
+    cout<<"Enter "<<n<< "supplies: ";
+    
+    int *supp = new int[n]();
+    
+    for(int i=0;i<n;++i)
+    cin >> supp[i];
+    
+    cout<<endl<<"Enter number of destination: ";
+    cin >> m;
+    
+    int *dem = new int[m]();
+    
+    cout<<"Enter "<<m<< "demands: ";
+    
+    for(int i=0;i<m;++i)
+    cin >> dem[i];
+
+    bool c = check_balance(supp,dem,n,m);
+    
+    c?cout<<"Supplies and demand are balanced":cout<<"Supplies and demand are unbalanced"<<endl;
+    
+    cout<<endl<<"Enter transportation cost as a grid of " << n<<"x"<<m<<" :"<<endl;
+
+    for(int i=0;i<n;++i)
+    {
+            for(int j=0;j<m;++j)
+            cin >> arr[i][j];
+    }
+    
+    vector<vecb> check;
+    
+    for(int i=0;i<n;++i)
+    {
+            vecb temp(m,1);
+            check.pb(temp);
+    }
+    int z=0;
+    while(1)
+    {
+            
+            if(all_zero(n,m,dem,supp))
+            break;
+           
+            
+            veci u = fun_u(n,m,check); 
+            int max_u = *max_element(u.begin(),u.end());
+            veci v = fun_v(n,m,check); 
+            int max_v = *max_element(v.begin(),v.end()); 
+                       
+            int max_uv = max(max_u,max_v);
+            
+            print(u);print(v);cout<< max_uv<<endl;
+            
+            if(max_uv==max_u)
+            {
+                 int index = find_index(max_u,u);
+                 
+                 int temp_min=INF; int temp_pos;
+                 for(int j=0;j<m;++j)
+                 {
+                         if(temp_min>arr[index][j] && check[index][j])
+                         {temp_min=arr[index][j];temp_pos=j;}
+                 }
+                 
+                 
+                 int i=index;
+                 int j=temp_pos;
+                 
+                 //cout<<"i"<<i<<"j"<<j<<endl;
+                 
+                 if(supp[i]>= dem[j])
+                 {
+                                 supp[i] -= dem[j];
+                                 z += arr[i][j] * dem[j];
+                                 dem[j]=0;
+                                 
+                                 for(int ii=0;ii<n;++ii)
+                                 check[ii][j]=0;
+                 }
+                 else
+                 {
+                     dem[j] -= supp[i];
+                     z += arr[i][j] * supp[i]; 
+                     supp[i]=0;
+                     
+                     for(int jj=0;jj<m;++jj)
+                     check[i][jj]=0;                
+                 }            
+            }
+            else
+            {
+                    int index = find_index(max_v,v);
+           
+                    int temp_min=INF; int temp_pos;
+                    for(int ii=0;ii<n;++ii)
+                    {
+                         if(temp_min>arr[ii][index] && check[ii][index])
+                         {temp_min=arr[ii][index];temp_pos=ii;}
+                    }
+                    
+                    int i=temp_pos;
+                    int j=index;
+                    
+                    //cout<<"i"<<i<<"j"<<j<<endl;    
+                    if(supp[i]>= dem[j])
+                    {
+                                 supp[i] -= dem[j];
+                                 z += arr[i][j] * dem[j];
+                                 dem[j]=0;
+                                 
+                                 for(int ii=0;ii<n;++ii)
+                                 check[ii][j]=0;
+                    }
+                    else
+                    {
+                     dem[j] -= supp[i];
+                     z += arr[i][j] * supp[i]; 
+                     supp[i]=0;
+                     
+                     for(int jj=0;jj<m;++jj)
+                     check[i][jj]=0;                
+                     } 
+            }
+    }
+            
+    cout<<endl<<"Optimal Solution: " << z;
+    
+    return 0;
+}
