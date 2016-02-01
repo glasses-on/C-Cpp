@@ -1,2 +1,2 @@
 # C-Cpp
-Algorithms/Programs implemented in C/C++
+Algorithms/Programs/DataStructures implemented in C/C++
