@@ -1,6 +1,9 @@
 /*
 This program creates a data structure - TRIE and takes a set of strings and check weather any
 string is a prefix of any other string in the set.
+
+Time complexity for each string check - O(len(string))
+
 e.g1-
 3
 aab
