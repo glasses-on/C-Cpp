@@ -1,0 +1,193 @@
+/*
+  glasses-on
+  
+  We enter number of variables in a boolean expression.
+  
+  Now we can output the expression giving truth-table as input or vice-versa
+  
+  Example:
+
+enter no. of variables  2
+
+A  0011          //output
+B  0101
+Enter 1 for Truth-table to Expression or 2 for Expression to Truth-Table
+
+2
+Enter the expression:
+aB+AB    //input
+
+Truth-Table:   //output
+        0
+        1
+        0
+        1
+
+*/
+
+#include<iostream>
+using namespace std;
+#include<math.h>
+#include<string.h>
+
+
+int main(){
+    
+    int i,j,n,k,m,q,l,z,x,ii,jj,kk,option,l1;
+    int a[1000][50],kkk[50],tt[50];
+    char d[50][50],ex[500][500],fff[50][50],ff[50][50];
+    int b[50];
+    char p,c;
+    char f[50];
+    p=65;c=97;
+    x=1;k=0;ii=0;m=0;
+
+kk=1;
+    cout << "\t\t\t"<<"** DIGITAL KIT ** "<<endl<<endl;
+
+  
+    cout << "enter no. of variables  ";
+    cin >> n;
+    for(j=1;j<=n;j++){
+                      
+                      for(m=1;m<=pow(2,j-1);m++){                      
+                      for(i=1;i<=pow(2,n-j);i++)
+                      a[i][j]=0;
+                       
+                                           
+                      q =  pow(2,n-j);                                       
+                      for(k=1;k<=pow(2,n-j);k++)
+                      a[q+k][j]=1;
+                      } 
+                                          p++;                            
+                                           }
+                                        
+                             
+                      for(j=1;j<=n;j++){
+                         for(m=1;m<=n-1;m++){
+                            for(k=pow(2,n-j+m)+1,i=1;k<=pow(2,n),i<=pow(2,n);k++,i++){
+                                                                                                                             
+                             a[k][j]=a[i][j];
+                             
+                             }}}     
+                                   
+                              
+                              p=65;cout << endl;        
+                              for(j=1;j<=n;j++){
+                                                cout << p;
+                                                cout << "  ";
+                                                
+       
+                               for(i=1;i<=pow(2,n);i++)
+                                                cout << a[i][j];
+                                                                         
+                                                cout <<endl;
+                                                p++;
+                                                } 
+                                                
+cout << "Enter 1 for Truth-table to Expression or 2 for Expression to Truth-Table\n";
+cin>>option;
+    if(option==1){                              
+
+                       
+                              cout << "Enter Inputs: " << endl;;
+                              for(i=1;i<=pow(2,n);i++){
+                                                               cout << "   ";
+                                                               cin >> b[i];}
+                                                               
+                                                        
+                               for(i=1;i<=pow(2,n);i++){
+                                                        if(b[i]==1){
+                                                                    
+                                                                    p=65;c=97;
+                                                                    
+                                                                    for(j=1;j<=n;j++){
+                                                                                      if(a[i][j]==1)
+                                                                                      d[x][j]=p;
+                                                                                      
+                                                                                      else if(a[i][j]==0)
+                                                                                      d[x][j]=c;
+                                                                                      
+                                                                                      p++;c++;
+                                                                                      }x++;
+                                                                                      }
+                                                                                      
+                                                                                      }
+                                           
+                                           
+                                           
+                                      cout << "Expression - " << endl;
+                                      for(i=1;i<=x;i++){
+                                                               for(j=1;j<=n;j++)
+                                                               cout << d[i][j];
+                                                                                 
+                                                                          if(kk<=x-2)      
+                                                                          cout<<"+"; 
+
+                                                                           kk++;      
+                                                                                 }
+
+               }
+
+
+if(option==2){
+
+ cout<< "Enter the expression: "<<endl;
+ cin >> f;
+
+l1=strlen(f);
+m=1;k=1;
+for(i=0;i<l1;i++){
+
+if(f[i] != '+'){
+fff[m][k]=f[i];
+k++;}
+
+else if(f[i]=='+'){
+m+=1;k=1;ii++;
+continue;
+}
+}
+ ii+=1;
+
+for(i=1;i<=pow(2,n);i++){
+                                                                  
+             p=65;c=97;
+                                                                    
+             for(j=1;j<=n;j++){
+                             if(a[i][j]==1)
+                             ff[x][j]=p;
+                                                                                      
+                             else if(a[i][j]==0)
+                             ff[x][j]=c;
+                                                                                      
+                             p++;c++;
+                             }x++;
+                                                                                                                                                
+                             }                                                         
+                                           
+
+for(i=1;i<=ii;i++){x=0;
+for(m=1;m<=pow(2,n);m++){x=0;
+for(j=1;j<=n;j++){
+if(fff[i][j]==ff[m][j])
+x++;
+}
+if(x==n)
+{tt[m]=1;break;}
+}}
+
+
+cout<<endl;
+cout<< "Truth-Table: "<<endl;
+for(i=1;i<=pow(2,n);i++)
+cout<<"\t"<<tt[i]<<endl;
+
+
+
+}
+                        
+                                            
+                                           return 0;
+                                           
+                                           }                          
