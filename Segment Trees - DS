@@ -1,0 +1,77 @@
+/*
+This program creates a data structure - Segment trees
+It will take an array of numbers as input and a query: minimum element b/w two indices
+
+Query will take O(lg (sizeof(array)))
+*/
+
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+#define long long int ll
+#define MAX 65000
+#define vecp vector<pair<ll,ll> >
+
+vecp tree(MAX); 
+
+void create_tree(int node, int start, int end, int *arr)
+{
+     if(start==end)
+     {
+                   //cout<<node<<" ";
+                   tree[node] = arr[start];
+                   //cout<<tree[node]<<endl;
+     }
+     else
+     {
+         int mid = (start+end)/2;
+         
+         create_tree(2*node,start,mid,arr);
+         create_tree(2*node+1,mid+1,end,arr);
+         
+         tree[node] = min(tree[2*node],tree[2*node+1]);
+     }     
+}
+
+int query(int node, int start, int end, int l,int r)
+{
+     if(r<start || l>end)
+     return MAX;
+    
+     if(start>=l && end<=r)
+     {
+                   return tree[node];
+     }
+     
+     int mid = (start+end)/2;
+     
+     int p1 = query(2*node,start,mid,l,r);
+     int p2 = query(2*node+1,mid+1,end,l,r);
+     
+     return min(p1,p2);
+}
+
+int main()
+{
+    int arr[10] = {0,2,5,1,7,90,3,2,8,10};  
+    
+    create_tree(1,0,9,arr);
+    int l,r;
+    
+    
+    //for(int i=1;i<=25;++i)
+    //cout<<tree[i]<<" ";
+    
+    
+    while(1)
+    { cin >> l >> r;   //Left and right indices of query
+      cout<<query(1,0,9,l,r)<<endl;
+    }
+    
+    return 0;
+}
+      
+    
+    
