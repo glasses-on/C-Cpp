@@ -1,0 +1,181 @@
+#include<iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+#define pb push_back
+#define veci vector<int>
+#define vecb vector<bool>
+#define pi pair<int,int>
+#define INF 99999
+#define M 2
+
+/*
+glasses-on
+Number of jobs: 5
+Enter processing time for Jobs 1 to 5 for every machine in the order of their working:
+Machine 1 : 5 3 8 10 7
+Machine 2 : 2 6 4 7 12
+
+Sequence of jobs: 2 5 4 3 1
+
+Job no.    Mac1        Mac2
+        Start End   Start End
+ 2      0   3         3     9
+ 5      3   10       10    22
+ 4     10   20       22    29
+ 3     20   28       29    33
+ 1     28   33       33    35
+ */
+
+pi min_element_pos(veci one, veci two, vecb check)                  //Returns a pair<machine number, job number> with
+{                                                                   //next minimum processing time from available jobs.          
+                        int min_one,min_two,pos_one,pos_two;
+                        
+                        min_one = min_two = INF;
+                        
+             for(int i=0;i<one.size();++i)
+             {
+                     if(!check[i])
+                     {
+                                 if(one[i]<min_one)
+                                 {        min_one = one[i];
+                                          pos_one=i;
+                                 }
+                     }
+             }
+             
+             for(int i=0;i<two.size();++i)
+             {
+                     if(!check[i])
+                     {
+                                 if(two[i]<min_two)
+                                 {        min_two = two[i];
+                                          pos_two=i;
+                                 }
+                     }
+             }
+             
+             int min_element = min(min_one,min_two);
+             
+             pi return_pair;   // < machine, job number>
+             
+             if(min_element == min_one)
+             {return_pair.first = 1; return_pair.second = pos_one;}
+             else
+             {return_pair.first = 2; return_pair.second = pos_two;}
+             
+             
+             return return_pair;
+}
+             
+veci merge_two_shizs(veci one, veci two)           
+{
+     int n = one.size();
+     
+     veci sequence(n,-1);
+     
+     vecb finish(n,0);
+     
+     int front_pos=0; int back_pos=n-1;
+     
+     int count=0;
+     while(count<n)
+     {
+                   count++;
+                   
+                   pi p = min_element_pos(one,two,finish);
+                   
+                   if(p.first == 1) 
+                   {
+                              sequence[front_pos] = p.second;
+                              front_pos++;
+                              finish[p.second] = 1;
+                   }
+                   else
+                   {
+                       sequence[back_pos] = p.second;
+                       back_pos--;          
+                       finish[p.second]=1;
+                   }
+     }
+     
+     return sequence;
+}             
+     
+int main()
+{
+    int J,input;
+    cout<<"Number of jobs: ";
+    cin >> J;
+    
+    veci sequence;
+    
+    vector<veci> m_machine;
+    
+    cout<<"Enter processing time for Jobs 1 to "<<J << " for every machine in the order of their working: "<<endl;
+    for(int i=0;i<M;++i)
+    {
+            veci temp;
+            cout<<"Machine "<<i+1<<" : ";
+            
+            for(int i=0;i<J;++i)
+            {
+                    cin >> input; temp.pb(input);
+            }
+            
+            m_machine.pb(temp);
+    }
+            
+    veci one = m_machine[0];         //Machine - 1 processing times
+    veci two = m_machine[1];         //Machine - 2 Processing times         
+            
+    sequence = merge_two_shizs(one,two);
+                
+    cout<<endl<<"Sequence of jobs: ";
+    
+    for(int i=0;i<J;++i)
+    cout<<sequence[i]+1<<" ";
+    
+    cout<<endl<<endl;
+    
+    //Chart Calculation
+    
+    vector<pi> mac1; vector<pi> mac2;
+    int first_mac1 = 0;
+    for(int i=0;i<J;++i)
+    {
+            int last_mac1 = first_mac1 + one[sequence[i]];
+            pi temp_p(first_mac1,last_mac1);
+            
+            mac1.pb(temp_p);
+            
+            first_mac1 = last_mac1;
+    }
+    
+    int first_mac2 = mac1[0].second; int last_mac2 = first_mac2 + two[sequence[0]];
+    
+    pi temp_p(first_mac2,last_mac2); 
+    mac2.pb(temp_p);
+    
+    for(int i=1;i<J;++i)
+    {
+            int first_mac2 = max(mac2[i-1].second , mac1[i].second);
+            int last_mac2 = first_mac2 + two[sequence[i]];
+            
+            pi temp_p(first_mac2,last_mac2);
+            
+            mac2.pb(temp_p);
+    }
+            
+    cout<<"Job no.    Mac1        Mac2"     <<endl;
+    cout<<"        Start End   Start End"   <<endl;
+    
+    for(int i=0;i<J;++i)
+    printf(" %d     %d   %d       %d    %d\n",sequence[i]+1,mac1[i].first,mac1[i].second,mac2[i].first,mac2[i].second);
+                    
+    return 0;
+}                
+    
+    
